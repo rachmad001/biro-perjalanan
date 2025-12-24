@@ -1,0 +1,248 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Employee {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // Harus di-hash (misal: bcrypt)
+  fullName  String
+  
+  // Opsional: Role untuk membedakan Admin vs Staff biasa (Fitur Visioner )
+  role      Role     @default(STAFF) 
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Soft Delete metadata (added)
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("employees") // Mapping ke nama tabel database 'employees'
+}
+
+model Tourist {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String?   // Nullable, diisi jika turis mendaftar untuk akses mandiri
+  fullName    String
+  
+  // Data Sensitif (Hanya boleh diakses pegawai login) 
+  passportNo  String?   
+  phoneNumber String?
+  address     String?   @db.Text // Menggunakan tipe Text untuk alamat panjang
+
+  // Relasi: Satu turis bisa memiliki banyak perjalanan
+  order     Order[]
+
+  // Soft Delete: Agar data tidak hilang permanen saat dihapus pegawai 
+  deletedAt   DateTime?
+  deletedBy   String? 
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("tourists")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+// Add class type enum
+enum ClassType {
+  economy
+  business
+}
+
+// New models and relations (updated with timestamps & soft-delete fields)
+model Order {
+  id        Int              @id @default(autoincrement())
+
+  // Relation to Tourist
+  tourist   Tourist?         @relation(fields: [touristId], references: [id])
+  touristId Int?
+
+  // Relation to travel_package
+  package     travel_package? @relation(fields: [packageId], references: [id])
+  packageId   Int?
+
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // Soft Delete metadata
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("orders")
+}
+
+model travel_package {
+  id         Int      @id @default(autoincrement())
+  name       String
+  destinasi  String
+  startdate  DateTime
+  enddate    DateTime
+
+  // Back relations
+  orders     Order[]
+  travels    travel[]
+  hotels     hotels[]
+
+  // Photos relation (added)
+  photos     photo_travel_package[]
+
+  // Publish flag
+  is_publish Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("travel_packages")
+}
+
+model travel {
+  id                Int              @id @default(autoincrement())
+  brandName         String
+  classType         ClassType
+  startDate         DateTime
+  endDate           DateTime
+
+  // New location fields
+  startPoint        String
+  endPoint          String
+
+  // Photos relation (added)
+  photos            photo_travel[]
+
+  travel_package    travel_package?  @relation(fields: [travel_package_id], references: [id])
+  travel_package_id Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("travels")
+}
+
+model hotels {
+  id                Int              @id @default(autoincrement())
+  name              String
+  location          String
+  roomType          String
+
+  // New fields (added)
+  description       String?
+  around_property   Json?
+  popular_around_property Json?
+
+  // New check-in/check-out fields
+  checkin           DateTime
+  checkout          DateTime
+
+  // Photos relation (added)
+  photos            photo_hotels[]
+
+  travel_package    travel_package?  @relation(fields: [travel_package_id], references: [id])
+  travel_package_id Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("hotels")
+}
+
+// New photo & activity models (added)
+model photo_travel_package {
+  id                 Int              @id @default(autoincrement())
+  path               String?
+
+  travel_package     travel_package?  @relation(fields: [travel_package_id], references: [id])
+  travel_package_id  Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("photo_travel_packages")
+}
+
+model photo_travel {
+  id          Int     @id @default(autoincrement())
+  path        String?
+
+  travel      travel? @relation(fields: [travel_id], references: [id])
+  travel_id   Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("photo_travels")
+}
+
+model photo_hotels {
+  id         Int     @id @default(autoincrement())
+  path       String?
+
+  hotel      hotels? @relation(fields: [hotels_id], references: [id])
+  hotels_id  Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("photo_hotels")
+}
+
+model activity_travel {
+  id            Int     @id @default(autoincrement())
+  name          String
+  tour_activity Json
+  startDate     DateTime
+  endDate       DateTime
+
+  photos        photo_activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("activity_travels")
+}
+
+model photo_activity {
+  id                  Int             @id @default(autoincrement())
+  path                String?
+
+  activity_travel     activity_travel? @relation(fields: [activity_travel_id], references: [id])
+  activity_travel_id  Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  @@map("photo_activities")
+}
