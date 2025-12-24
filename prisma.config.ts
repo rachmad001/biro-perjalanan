@@ -17,12 +17,14 @@ const passwordPart = DB_PASSWORD ? `:${DB_PASSWORD}` : '';
 
 // 3. Construct the final URL
 const databaseUrl = `mysql://${DB_USERNAME}${passwordPart}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+
+process.env.DATABASE_URL = databaseUrl;
 export default defineConfig({
   schema: "prisma/schema.prisma",
-  migrations: {
-    path: "prisma/migrations",
-  },
-  datasource: {
-    url: databaseUrl,
-  },
+  // migrations: {
+  //   path: "prisma/migrations",
+  // },
+  // datasource: {
+  //   url: databaseUrl,
+  // }
 });
