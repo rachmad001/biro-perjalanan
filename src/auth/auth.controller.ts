@@ -1,11 +1,13 @@
 import "dotenv/config";
-import { Controller, Body, Post, HttpCode, HttpStatus, UseGuards, Get, Request } from '@nestjs/common';
+import { Controller, Body, Post, HttpCode, HttpStatus, UseGuards, Get, Request, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInEmployeeDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
 import { CreateEmployeeDto } from 'src/employee/dto/create-employee.dto';
 import { EmployeeService } from 'src/employee/employee.service';
 import { Role } from '@prisma/client';
+import { CreateTouristDto } from "src/tourist/dto/create-tourist.dto";
+import { UpdateTouristDto } from "src/tourist/dto/update-tourist.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -20,7 +22,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('profile')
   getprofile(@Request() req) {
-    return req.user;
+    return this.authService.getProfile(req.user, req.user_type);
   }
 
   @Post('employee-register')
@@ -30,5 +32,27 @@ export class AuthController {
     const role = createEmployeeDto.kodeRole === ADMIN_ROLE ? Role.ADMIN : Role.STAFF;
     const { kodeRole, ...dtoWithoutKodeRole } = createEmployeeDto;
     return this.employeeService.create({ ...dtoWithoutKodeRole, role });
+  }
+
+  @Post('signin-tourist')
+  @HttpCode(HttpStatus.OK)
+  signInTourist(@Body() signInEmployeeDto: SignInEmployeeDto) {
+    return this.authService.signInTourist(signInEmployeeDto);
+  }
+
+  @Post('tourist-register')
+  createTourist(@Body() createTouristDto: CreateTouristDto) {
+    return this.authService.registerTourist(createTouristDto);
+  }
+
+  @Get('employees')
+  getAllEmployees() {
+    return this.authService.findAllEmployees();
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('edit-tourist')
+  editTourist(@Request() req, @Body() updateTouristDto: UpdateTouristDto) {
+    return this.authService.editTourist(req.user.id, updateTouristDto, req.user_type);
   }
 }
