@@ -5,5 +5,5 @@ export class CreateEmployeeDto {
     email: string;
     password: string;
     role: Role;
-    kodeRole: string;
+    kodeRole?: string;
 }
