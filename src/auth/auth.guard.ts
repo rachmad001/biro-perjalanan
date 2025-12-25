@@ -1,14 +1,23 @@
 import {
     CanActivate, ExecutionContext,
-    Injectable, UnauthorizedException
+    Injectable, UnauthorizedException, ForbiddenException, SetMetadata
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Request } from 'express';
+import { Reflector } from '@nestjs/core';
+import { Role } from '@prisma/client';
+
+// Role detector decorator
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private readonly jwtService: JwtService) {}
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly reflector: Reflector
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
@@ -22,7 +31,20 @@ export class AuthGuard implements CanActivate {
             });
             request['user'] = payload.user;
             request['user_type'] = payload.type;
+
+            // Role detector logic
+            // const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+            //     context.getHandler(),
+            //     context.getClass(),
+            // ]);
+            // if (requiredRoles && requiredRoles.length > 0) {
+            //     const userRole = payload.user?.role;
+            //     if (!requiredRoles.includes(userRole)) {
+            //         throw new ForbiddenException('Insufficient role');
+            //     }
+            // }
         } catch (error) {
+            if (error instanceof ForbiddenException) throw error;
             throw new UnauthorizedException('Invalid token');
         }
         return true;
