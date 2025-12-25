@@ -3,7 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { SignInEmployeeInterface } from './interfaces/signin.interface';
 import { JwtService } from '@nestjs/jwt';
 import { CreateTouristDto } from 'src/tourist/dto/create-tourist.dto';
-import { UpdateTouristDto } from 'src/tourist/dto/update-tourist.dto';
+import { UpdateTouristDto } from 'src/auth/dto/update-tourist.dto';
+import { UpdateEmployeeDto } from 'src/auth/dto/update-employee.dto';
 
 @Injectable()
 export class AuthService {
@@ -64,17 +65,21 @@ export class AuthService {
     if (reqType !== 'tourist') {
       throw new BadRequestException('only tourist');
     }
+
     return this.prisma.tourist.update({
       where: { id: touristId, deletedAt: null },
       data: updateTouristDto,
     });
   }
 
-  findAllEmployees() {
-    return this.prisma.employee.findMany();
-  }
+  editEmployee(employeeId: number, updateEmployeeDto: UpdateEmployeeDto, reqType: string) {
+    if (reqType !== 'employee') {
+      throw new BadRequestException('only employee');
+    }
 
-  findEmployeeById(id: number) {
-    return this.prisma.employee.findUnique({ where: { id } });
+    return this.prisma.employee.update({
+      where: { id: employeeId, deletedAt: null },
+      data: updateEmployeeDto,
+    });
   }
 }

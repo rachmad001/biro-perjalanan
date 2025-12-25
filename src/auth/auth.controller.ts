@@ -8,6 +8,7 @@ import { EmployeeService } from 'src/employee/employee.service';
 import { Role } from '@prisma/client';
 import { CreateTouristDto } from "src/tourist/dto/create-tourist.dto";
 import { UpdateTouristDto } from "src/tourist/dto/update-tourist.dto";
+import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -45,14 +46,20 @@ export class AuthController {
     return this.authService.registerTourist(createTouristDto);
   }
 
-  @Get('employees')
-  getAllEmployees() {
-    return this.authService.findAllEmployees();
-  }
+  // @Get('employees')
+  // getAllEmployees() {
+  //   return this.authService.findAllEmployees();
+  // }
 
   @UseGuards(AuthGuard)
   @Put('edit-tourist')
   editTourist(@Request() req, @Body() updateTouristDto: UpdateTouristDto) {
     return this.authService.editTourist(req.user.id, updateTouristDto, req.user_type);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('edit-employee')
+  editEmployee(@Request() req, @Body() updateEmployeeDto: UpdateEmployeeDto) {
+    return this.authService.editEmployee(req.user.id, updateEmployeeDto, req.user_type);
   }
 }
