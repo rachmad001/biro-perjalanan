@@ -12,9 +12,10 @@ import { PhotoTravelPackageModule } from './photo_travel_package/photo_travel_pa
 import { TravelModule } from './travel/travel.module';
 import { PhotoTravelsModule } from './photo_travels/photo_travels.module';
 import { HotelsModule } from './hotels/hotels.module';
+import { PhotoHotelsModule } from './photo_hotels/photo_hotels.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule],
+  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule],
   controllers: [AppController],
   providers: [AppService],
 })

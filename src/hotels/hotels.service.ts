@@ -47,6 +47,9 @@ export class HotelsService {
         travel_package: {
           where: { deletedAt: null },
         },
+        photos: {
+          where: { deletedAt: null },
+        },
       },
     });
   }
