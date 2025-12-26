@@ -118,10 +118,15 @@ export class TravelService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const travel = await this.prisma.travel.findUnique({ where: { id } });
+    if (travel?.deletedAt) {
+      throw new Error('id was deleted');
+    }
+
     const travel_package = await this.prisma.travel_package.findUnique({
       where: {
-        id: updateTravelDto.travel_package_id,
+        id: travel?.travel_package_id,
       }
     });
 
