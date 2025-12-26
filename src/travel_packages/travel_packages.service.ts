@@ -58,6 +58,11 @@ export class TravelPackagesService {
     if (travelPackage?.deletedAt) {
       throw new BadRequestException('data was deleted');
     }
+
+    if(travelPackage?.is_publish) {
+      throw new BadRequestException('Cannot update a published travel package');
+    }
+
     return this.prisma.travel_package.update({
       where: { id },
       data: updateTravelPackageDto,
@@ -68,6 +73,10 @@ export class TravelPackagesService {
     const travelPackage = await this.prisma.travel_package.findUnique({ where: { id } });
     if (travelPackage?.deletedAt) {
       throw new BadRequestException('data was deleted');
+    }
+
+    if(travelPackage?.is_publish) {
+      throw new BadRequestException('Cannot delete a published travel package');
     }
 
     return this.prisma.travel_package.update({
