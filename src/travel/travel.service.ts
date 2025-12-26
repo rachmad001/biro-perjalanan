@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTravelDto } from './dto/create-travel.dto';
 import { UpdateTravelDto } from './dto/update-travel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -15,35 +15,35 @@ export class TravelService {
     });
 
     if (!travel_package) {
-      throw new Error('travel_package_id not found');
+      throw new BadRequestException('travel_package_id not found');
     }
 
     if (travel_package.deletedAt) {
-      throw new Error('Cannot add travel to a deleted travel package');
+      throw new BadRequestException('Cannot add travel to a deleted travel package');
     }
 
     if (travel_package.is_publish) {
-      throw new Error('Cannot add travel to a published travel package');
+      throw new BadRequestException('Cannot add travel to a published travel package');
     }
 
-    if (createTravelDto.startDate >= createTravelDto.endDate) {
-      throw new Error('startDate must be before endDate');
+    if (new Date(createTravelDto.startDate) >= new Date(createTravelDto.endDate)) {
+      throw new BadRequestException('startDate must be before endDate');
     }
 
-    if (createTravelDto.startDate < new Date()) {
-      throw new Error('startDate must be in the future');
+    if (new Date(createTravelDto.startDate) < new Date()) {
+      throw new BadRequestException('startDate must be in the future');
     }
 
-    if (createTravelDto.endDate < new Date()) {
-      throw new Error('endDate must be in the future');
+    if (new Date(createTravelDto.endDate) < new Date()) {
+      throw new BadRequestException('endDate must be in the future');
     }
 
     if (createTravelDto.startPoint === createTravelDto.endPoint) {
-      throw new Error('startPoint and endPoint cannot be the same');
+      throw new BadRequestException('startPoint and endPoint cannot be the same');
     }
 
-    if (createTravelDto.startDate < travel_package?.startdate || createTravelDto.endDate > travel_package.enddate) {
-      throw new Error('Travel dates must be within the travel package dates');
+    if (new Date(createTravelDto.startDate) < new Date(travel_package?.startdate) || new Date(createTravelDto.endDate) > new Date(travel_package.enddate)) {
+      throw new BadRequestException('Travel dates must be within the travel package dates');
     }
 
     return this.prisma.travel.create({
@@ -81,34 +81,34 @@ export class TravelService {
     });
 
     if (!travel_package) {
-      throw new Error('travel_package_id not found');
+      throw new BadRequestException('travel_package_id not found');
     }
     if (travel_package.deletedAt) {
-      throw new Error('Cannot edit travel to a deleted travel package');
+      throw new BadRequestException('Cannot edit travel to a deleted travel package');
     }
 
     if (travel_package.is_publish) {
-      throw new Error('Cannot edit travel to a published travel package');
+      throw new BadRequestException('Cannot edit travel to a published travel package');
     }
 
-    if ((updateTravelDto.startDate && updateTravelDto.endDate) && (updateTravelDto.startDate >= updateTravelDto.endDate)) {
-      throw new Error('startDate must be before endDate');
+    if ((updateTravelDto.startDate && updateTravelDto.endDate) && (new Date(updateTravelDto.startDate) >= new Date(updateTravelDto.endDate))) {
+      throw new BadRequestException('startDate must be before endDate');
     }
 
-    if ((updateTravelDto.startDate) && (updateTravelDto.startDate < new Date())) {
-      throw new Error('startDate must be in the future');
+    if ((updateTravelDto.startDate) && (new Date(updateTravelDto.startDate) < new Date())) {
+      throw new BadRequestException('startDate must be in the future');
     }
 
-    if ((updateTravelDto.endDate) && (updateTravelDto.endDate < new Date())) {
-      throw new Error('endDate must be in the future');
+    if ((updateTravelDto.endDate) && (new Date(updateTravelDto.endDate) < new Date())) {
+      throw new BadRequestException('endDate must be in the future');
     }
 
     if (updateTravelDto.startPoint === updateTravelDto.endPoint) {
-      throw new Error('startPoint and endPoint cannot be the same');
+      throw new BadRequestException('startPoint and endPoint cannot be the same');
     }
 
-    if ((updateTravelDto.startDate && updateTravelDto.startDate < travel_package?.startdate) || (updateTravelDto.endDate && updateTravelDto.endDate > travel_package.enddate)) {
-      throw new Error('Travel dates must be within the travel package dates');
+    if ((updateTravelDto.startDate && new Date(updateTravelDto.startDate) < new Date(travel_package?.startdate)) || (updateTravelDto.endDate && new Date(updateTravelDto.endDate) > new Date(travel_package.enddate))) {
+      throw new BadRequestException('Travel dates must be within the travel package dates');
     }
 
 
@@ -126,7 +126,7 @@ export class TravelService {
 
     const travel_package = await this.prisma.travel_package.findUnique({
       where: {
-        id: travel?.travel_package_id,
+        id: travel?.travel_package_id || 0,
       }
     });
 

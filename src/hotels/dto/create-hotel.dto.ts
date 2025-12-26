@@ -3,8 +3,8 @@ export class CreateHotelDto {
     location: string;
     roomType: string;
     description?: string;
-    around_property?: Record<string, any>;
-    popular_around_property?: Record<string, any>;
+    around_property?: any;
+    popular_around_property?: any;
     checkin: Date;
     checkout: Date;
     travel_package_id: number;

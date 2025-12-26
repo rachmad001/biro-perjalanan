@@ -1,4 +1,4 @@
 export class CreatePhotoTravelDto {
-    path: string;
+    path?: string | "";
     travel_id: number;
 }

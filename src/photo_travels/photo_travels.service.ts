@@ -16,10 +16,10 @@ export class PhotoTravelsService {
         where: { id: dto.travel_id },
       });
       if (!travel) {
-        throw new Error('Travel not found');
+        throw new BadRequestException('Travel not found');
       }
       if (travel?.deletedAt) {
-        throw new Error('Cannot add photo to a deleted travel');
+        throw new BadRequestException('Cannot add photo to a deleted travel');
       }
       const saved = await this.prisma.photo_travel.create({
         data: dto,
@@ -30,7 +30,7 @@ export class PhotoTravelsService {
   }
 
   async findAll() {
-    return await this.prisma.photo_travel.findMany({
+    return this.prisma.photo_travel.findMany({
       where: { deletedAt: null },
       include: {
         travel: {
@@ -60,7 +60,7 @@ export class PhotoTravelsService {
       where: { id, deletedAt: null },
     });
     if (!data) {
-      throw new Error('Photo travel not found or already deleted');
+      throw new BadRequestException('Photo travel not found or already deleted');
     }
 
     const dataDeleted = await this.prisma.photo_travel.update({

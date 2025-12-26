@@ -21,8 +21,16 @@ import { HotelsModule } from './hotels/hotels.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(EmployeStaffMiddleware)
-      .exclude({path: 'travel-packages', method:  RequestMethod.GET},)
-      .forRoutes('tourist', 'photo-travel-package', 'travel-packages');
+      .exclude(
+        {path: 'travel-packages', method:  RequestMethod.GET},
+        {path: 'travel', method:  RequestMethod.GET},
+        {path: 'photo-travels', method:  RequestMethod.GET},
+        {path: 'hotels', method:  RequestMethod.GET},
+      )
+      .forRoutes(
+        'tourist', 'photo-travel-package', 'travel-packages', 
+        'travel', 'photo-travels', 'hotels'
+      );
 
     consumer.apply(EmployeeAdminMiddleware)
       .forRoutes('employee');

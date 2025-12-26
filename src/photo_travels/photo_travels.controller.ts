@@ -35,10 +35,10 @@ export class PhotoTravelsController {
     return this.photoTravelsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePhotoTravelDto: UpdatePhotoTravelDto) {
-    return this.photoTravelsService.update(+id, updatePhotoTravelDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updatePhotoTravelDto: UpdatePhotoTravelDto) {
+  //   return this.photoTravelsService.update(+id, updatePhotoTravelDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
