@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express'; // <--- Import this
+import { join } from 'path';
 
 function buildDatabaseUrl() {
   const {
@@ -27,7 +29,16 @@ function buildDatabaseUrl() {
 process.env.DATABASE_URL = buildDatabaseUrl();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads/', // URL prefix (optional)
+  });
+
+  // Enable CORS if you are calling this from a frontend (React/Vue)
+  // app.enableCors();
+
+  console.log('Serving static files from:', join(process.cwd(), 'uploads'));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

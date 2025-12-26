@@ -3,4 +3,5 @@ export class CreateTravelPackageDto {
     destinasi: string;
     startdate: Date;
     enddate: Date;
+    is_publish?: boolean;
 }

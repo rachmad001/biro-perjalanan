@@ -1,7 +1,7 @@
 import { diskStorage } from "multer";
 import { extname } from "path";
 
-export function fileUploadConfig(destination: string, maxFileSizeMB: number = 5, allowedMimeTypes: string = "jpg|jpeg|png|gif") { 
+export function fileUploadConfig(destination: string = '', maxFileSizeMB: number = 5, allowedMimeTypes: string = "jpg|jpeg|png|gif") { 
     return {
         storage: diskStorage({
             destination: './uploads/' + destination,
