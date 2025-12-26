@@ -10,9 +10,10 @@ import { EmployeStaffMiddleware } from './middleware/employe_staff.middleware';
 import { TravelPackagesModule } from './travel_packages/travel_packages.module';
 import { PhotoTravelPackageModule } from './photo_travel_package/photo_travel_package.module';
 import { TravelModule } from './travel/travel.module';
+import { PhotoTravelsModule } from './photo_travels/photo_travels.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule],
+  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule],
   controllers: [AppController],
   providers: [AppService],
 })
