@@ -15,9 +15,10 @@ import { HotelsModule } from './hotels/hotels.module';
 import { PhotoHotelsModule } from './photo_hotels/photo_hotels.module';
 import { ActivityTravelModule } from './activity_travel/activity_travel.module';
 import { PhotoActivityModule } from './photo_activity/photo_activity.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule, PhotoActivityModule],
+  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule, PhotoActivityModule, OrderModule],
   controllers: [AppController],
   providers: [AppService],
 })
