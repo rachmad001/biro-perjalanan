@@ -52,6 +52,9 @@ export class ActivityTravelService {
         travel_package: {
           where: { deletedAt: null },
         },
+        photos: {
+          where: { deletedAt: null },
+        }
       },
     });
   }
@@ -59,6 +62,14 @@ export class ActivityTravelService {
   async findOne(id: number) {
     return await this.prisma.activity_travel.findUnique({
       where: { id, deletedAt: null },
+      include: {
+        travel_package: {
+          where: { deletedAt: null },
+        },
+        photos: {
+          where: { deletedAt: null },
+        }
+      },
     });
   }
 

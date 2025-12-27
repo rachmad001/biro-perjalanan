@@ -14,9 +14,10 @@ import { PhotoTravelsModule } from './photo_travels/photo_travels.module';
 import { HotelsModule } from './hotels/hotels.module';
 import { PhotoHotelsModule } from './photo_hotels/photo_hotels.module';
 import { ActivityTravelModule } from './activity_travel/activity_travel.module';
+import { PhotoActivityModule } from './photo_activity/photo_activity.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule],
+  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule, PhotoActivityModule],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -29,11 +30,13 @@ export class AppModule implements NestModule {
         {path: 'photo-travels', method:  RequestMethod.GET},
         {path: 'hotels', method:  RequestMethod.GET},
         {path: 'photo-hotels', method:  RequestMethod.GET},
-        {path: 'activity-travel', method:  RequestMethod.GET}
+        {path: 'activity-travel', method:  RequestMethod.GET},
+        {path: 'photo-activity', method: RequestMethod.GET}
       )
       .forRoutes(
         'tourist', 'photo-travel-package', 'travel-packages', 
-        'travel', 'photo-travels', 'hotels', 'photo-hotels', 'activity-travel'
+        'travel', 'photo-travels', 'hotels', 'photo-hotels', 'activity-travel',
+        'photo-activity'
       );
 
     consumer.apply(EmployeeAdminMiddleware)
