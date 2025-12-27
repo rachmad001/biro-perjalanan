@@ -5,5 +5,6 @@ import { TravelPackagesController } from './travel_packages.controller';
 @Module({
   controllers: [TravelPackagesController],
   providers: [TravelPackagesService],
+  exports: [TravelPackagesService],
 })
 export class TravelPackagesModule {}

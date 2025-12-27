@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { BadRequestException, Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
 import { jwtConstants } from '../auth/constants';
@@ -10,7 +10,8 @@ export class PublicMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
-      return res.status(401).json({ message: 'You must be logged in' });
+      throw new BadRequestException('You must be logged in, no auth');
+      // return res.status(401).json({ message: 'You must be logged in' });
     }
     const token = authHeader.split(' ')[1];
     try {
@@ -18,11 +19,16 @@ export class PublicMiddleware implements NestMiddleware {
       req['user'] = decoded.user;
       req['user_type'] = decoded.type;
       if (decoded) {
-        next();
+        if (decoded.type === 'tourist') {
+          next();
+        } else {
+          return res.status(401).json({ message: 'You must be logged in as tourist' });
+        }
       } else {
         return res.status(401).json({ message: 'You must be logged in' });
       }
     } catch (err) {
+
       return res.status(401).json({ message: 'You must be logged in' });
     }
   }

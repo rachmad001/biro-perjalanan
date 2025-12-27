@@ -16,32 +16,28 @@ import { PhotoHotelsModule } from './photo_hotels/photo_hotels.module';
 import { ActivityTravelModule } from './activity_travel/activity_travel.module';
 import { PhotoActivityModule } from './photo_activity/photo_activity.module';
 import { OrderModule } from './order/order.module';
+import { ForTurisModule } from './for_turis/for_turis.module';
+import { PublicMiddleware } from './middleware/public.middleware';
 
 @Module({
-  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule, PhotoActivityModule, OrderModule],
+  imports: [AuthModule, PrismaModule, EmployeeModule, TouristModule, TravelPackagesModule, PhotoTravelPackageModule, TravelModule, PhotoTravelsModule, HotelsModule, PhotoHotelsModule, ActivityTravelModule, PhotoActivityModule, OrderModule, ForTurisModule],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(EmployeStaffMiddleware)
-      .exclude(
-        {path: 'travel-packages', method:  RequestMethod.GET},
-        {path: 'travel', method:  RequestMethod.GET},
-        {path: 'photo-travels', method:  RequestMethod.GET},
-        {path: 'hotels', method:  RequestMethod.GET},
-        {path: 'photo-hotels', method:  RequestMethod.GET},
-        {path: 'activity-travel', method:  RequestMethod.GET},
-        {path: 'photo-activity', method: RequestMethod.GET}
-      )
       .forRoutes(
-        'tourist', 'photo-travel-package', 'travel-packages', 
+        'tourist', 'photo-travel-package', 'travel-packages',
         'travel', 'photo-travels', 'hotels', 'photo-hotels', 'activity-travel',
         'photo-activity'
       );
 
     consumer.apply(EmployeeAdminMiddleware)
       .forRoutes('employee');
+
+    consumer.apply(PublicMiddleware)
+      .forRoutes('for-turis')
   }
 
 }

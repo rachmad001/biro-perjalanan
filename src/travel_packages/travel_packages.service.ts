@@ -17,9 +17,9 @@ export class TravelPackagesService {
     return this.prisma.travel_package.findMany({
       where: { deletedAt: null },
       include: {
-        orders: {
-          where: { deletedAt: null },
-        },
+        // orders: {
+        //   where: { deletedAt: null },
+        // },
         travels:  {
           where: { deletedAt: null },
         },
@@ -40,9 +40,9 @@ export class TravelPackagesService {
     return this.prisma.travel_package.findFirst({
       where: { id, deletedAt: null },
       include: {
-        orders: {
-          where: { deletedAt: null },
-        },
+        // orders: {
+        //   where: { deletedAt: null },
+        // },
         travels:  {
           where: { deletedAt: null },
         },
