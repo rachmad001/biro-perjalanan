@@ -97,6 +97,7 @@ model travel_package {
   enddate    DateTime
 
   // Back relations
+  activity_travels activity_travel[]
   orders     Order[]
   travels    travel[]
   hotels     hotels[]
@@ -221,6 +222,9 @@ model activity_travel {
   tour_activity Json
   startDate     DateTime
   endDate       DateTime
+
+  travel_package    travel_package?  @relation(fields: [travel_package_id], references: [id])
+  travel_package_id Int?
 
   photos        photo_activity[]
 

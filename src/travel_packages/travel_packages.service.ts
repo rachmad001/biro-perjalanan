@@ -28,6 +28,9 @@ export class TravelPackagesService {
         },
         photos: {
           where: { deletedAt: null },
+        },
+        activity_travels: {
+          where: { deletedAt: null },
         }
       }
     });
