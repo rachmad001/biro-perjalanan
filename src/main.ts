@@ -11,6 +11,7 @@ function buildDatabaseUrl() {
     DB_USERNAME,
     DB_PASSWORD,
     DB_NAME,
+    DB_ADDITIONAL
   } = process.env;
 
   if (!DB_HOST || !DB_PORT || !DB_USERNAME || !DB_NAME) {
@@ -22,7 +23,7 @@ function buildDatabaseUrl() {
       ? `:${encodeURIComponent(DB_PASSWORD)}`
       : '';
 
-  return `mysql://${DB_USERNAME}${passwordPart}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+  return `mysql://${DB_USERNAME}${passwordPart}@${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_ADDITIONAL}`;
 }
 
 // 🔑 Inject before Prisma loads
